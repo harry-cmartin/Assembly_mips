@@ -1,0 +1,142 @@
+
+.data
+	espaco: .asciiz " "
+	novalinha: .asciiz "\n"
+
+.text
+	main:
+		
+		li $v0, 5
+		syscall
+		move $t0, $v0
+		
+		
+		li $t1, 0 
+		li $t2, 0
+
+	pira1:
+		beq $t1, $t0, prox 
+		addi $t1, $t1, 1 
+		
+		
+		li $v0, 4
+		la $a0, novalinha
+		syscall
+		
+		li $t2, 0 
+		
+	pira1nova:
+		beq $t2, $t0, pira1
+		bge $t2, $t1, pira1 
+		
+		jal print
+		
+		addi $t2, $t2, 1 
+		
+		j pira1nova 
+		
+	prox:
+		
+		li $t1, 0 
+		li $t2, 0
+		li $t3, 1 
+		
+	
+		li $v0, 4
+		la $a0, novalinha
+		syscall
+		
+	pira2:
+		beq $t1, $t0, exit 
+		addi $t1, $t1, 1 
+		
+		
+		li $v0, 4
+		la $a0, novalinha
+		syscall
+		
+		li $t2, 0 
+		li $t3, 1 
+	
+	pira2nova:
+		beq $t2, $t0, pira2 
+		bge $t2, $t1, pira2
+		
+		jal print2
+		
+		addi $t2, $t2, 1 
+		addi $t3, $t3, 1 
+		
+		j pira2nova
+		
+	print:
+		blt $t1, 10, add0
+		
+		li $v0, 1
+		move $a0, $t1
+		syscall
+		
+		li $v0, 4
+		la $a0, espaco
+		syscall
+		
+		jr $ra 
+			
+	add0:
+		
+		li $v0, 1
+		move $a0, $zero
+		syscall
+		
+		li $v0, 1
+		move $a0, $t1
+		syscall
+		
+		li $v0, 4
+		la $a0, espaco
+		syscall
+		
+		jr $ra 
+		
+	print2:
+		blt $t3, 10, add02
+		
+		li $v0, 1
+		move $a0, $t3
+		syscall
+		
+		li $v0, 4
+		la $a0, espaco
+		syscall
+		
+		jr $ra 
+	
+	add02:
+		li $v0, 1
+		move $a0, $zero
+		syscall
+		
+		li $v0, 1
+		move $a0, $t3
+		syscall
+		
+		li $v0, 4
+		la $a0, espaco
+		syscall
+		
+		jr $ra
+
+	exit:
+		li $v0, 10
+		syscall
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

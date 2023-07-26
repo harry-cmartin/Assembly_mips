@@ -1,0 +1,94 @@
+.data
+	Nota: .asciiz "SR\n"
+	Nota1: .asciiz  "II\n"
+	Nota2: .asciiz "MI\n"
+	Nota3:.asciiz "MM\n"
+	Nota4:.asciiz "MS\n"
+	Nota5:.asciiz "SS\n"
+	
+	
+.text
+
+main:
+	
+	li $v0,5
+	syscall
+	move $t0,$v0
+	
+	beq $t0,$zero,SR
+	blt $t0,29,II
+	beq $t0,29,II
+	blt $t0,49,MI
+	beq $t0,49,MI
+	blt $t0,69,MM
+	beq $t0,69,MM
+	blt $t0,89,MS
+	beq $t0,89,MS
+	blt $t0,100,SS
+	beq $t0,100,SS
+	
+		
+			
+SR:
+	#imprime SR
+	li $v0,4
+	la $a0,Nota
+	syscall
+	
+	#encerramento
+	j Exit
+								
+					
+II:
+	#imprime II
+	li $v0,4
+	la $a0,Nota1
+	syscall
+	
+	#encerramento
+	j Exit
+	
+MI:
+	#imprime MI
+	li $v0,4
+	la $a0,Nota2
+	syscall
+	
+	#encerramento
+	j Exit
+
+MM:	
+	#imprime MM
+	li $v0,4
+	la $a0,Nota3
+	syscall
+	
+	#encerramento
+	j Exit
+	
+
+MS:
+	#imprime MS
+	li $v0,4
+	la $a0,Nota4
+	syscall
+	
+	#encerramento
+	j Exit
+	
+							
+																					
+SS:	
+
+	#imprime SS
+	li $v0,4
+	la $a0,Nota5
+	syscall
+	
+	#encerramento
+	j Exit																								
+
+Exit:
+
+	li $v0,10
+	syscall																																																									

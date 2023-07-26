@@ -1,0 +1,148 @@
+	#$t0 = M, m ou c
+	#$t1 = numero de caracteres da string
+	#$t2 = endereco da string
+	#$t3 = bit da string
+	#$t4 = se for 0, o primeiro caractere nao e um espaco
+	
+.data
+	opcao: .space 3
+
+	string: .space 100
+
+.text
+	main:
+		#le a opcao do usuario
+		li $v0, 8
+		la $a0, opcao
+		li $a1, 3
+		syscall
+		lb $t0, 0($a0)
+
+		#le a quantidade de caracteres q a string tera
+		li $v0, 5
+		syscall
+		move $t1, $v0
+		addi $t1, $t1, 1
+		
+		#le a string
+		li $v0, 8
+		la $a0, string
+		move $a1, $t1
+		syscall
+		move $t2, $a0
+		
+		add $t4, $t4, $zero #inicializando com 0, se continuar em 0, a primeira letra nao e um espaco
+
+		#Switch/Case depedendo de $t0
+		beq $t0, 'M', case1
+		beq $t0, 'm', case2
+		beq $t0, 'c', case3
+		j exit #caso digite uma opcao invalida, encerra o programa
+		
+	case1:
+		lb $t3, 0($t2) #carrega da memoria o bit da string
+		beq $t3, $zero, saida
+		
+		#confere se esta entre a e z, se nao estiver incrementa, pois n preciso mexer
+		blt $t3, 'a', incrementa1
+		bgt $t3, 'z', incrementa1
+		
+		#para deixar em maiusculo basta subtrair 32, de acordo com a tabela ASCII
+		addi $t3, $t3, -32
+		sb $t3, 0($t2)
+			
+	incrementa1:
+		addi $t2, $t2, 1
+		j case1		
+	
+	case2:
+		lb $t3, 0($t2)
+		beq $t3, $zero, saida
+		
+		#confere se esta entre A e Z, se nao estiver incrementa
+		blt $t3, 'A', incrementa2
+		bgt $t3, 'Z', incrementa2
+		
+		#para deixar em minusculo basta somar 32, de acordo com a tabela ASCII
+		addi $t3, $t3, 32
+		sb $t3, 0($t2)
+	
+	incrementa2:
+		addi $t2, $t2, 1
+		j case2	
+	
+	case3:
+		lb $t3, 0($t2)
+		beq $t3, $zero, saida
+		
+		beq $t3, ' ', capitalizar #se for um espaco, a proxima letra inicia uma nova palavra
+		beq $t4, $zero, capitalizarPrimeiraLetra #so vai entrar quando for letra
+		
+		#caso haja letras em maiusculo na frase
+		bgt $t3, 'A', descapitalizar
+		blt $t3, 'Z', descapitalizar
+		
+		blt $t3, 'a', incrementa3
+		bgt $t3, 'z', incrementa3
+		
+		sb $t3, 0($t2)
+		addi $t2, $t2, 1
+		
+	capitalizarPrimeiraLetra:
+		addi $t4, $t4, 1 #nao entra mais no capitalizarPrimeiraLetra
+		beq $t3, $zero, saida
+		
+		blt $t3, 'a', incrementa3
+		bgt $t3, 'z', incrementa3
+		
+		addi $t3, $t3, -32
+		sb $t3, 0($t2)
+		addi $t2, $t2, 1
+	
+		j case3
+		
+	capitalizar:
+		addi $t4, $t4, 1 #nao entra mais no capitalizarPrimeiraLetra
+		addi $t2, $t2, 1 #incrementa t2 para pegar o proximo bit
+		lb $t3, 0($t2)
+		
+		beq $t3, $zero, saida
+		beq $t3, ' ', capitalizar #para caso tenha uma sequencia de espacos
+		
+		blt $t3, 'a', incrementa3
+		bgt $t3, 'z', incrementa3
+		
+		addi $t3, $t3, -32
+		sb $t3, 0($t2)
+		addi $t2, $t2, 1
+		
+		j case3
+	
+	descapitalizar:
+		beq $t3, $zero, saida
+		
+		blt $t3, 'A', incrementa3
+		bgt $t3, 'Z', incrementa3
+		
+		addi $t3, $t3, 32
+		sb $t3, 0($t2)
+		j case3
+		
+	incrementa3:
+		addi $t2, $t2, 1
+		j case3	
+	
+	saida:
+		#imprime a saida
+		li $v0, 4
+		la $a0, string
+		syscall
+		
+		li $v0, 10
+		syscall
+	
+	exit:
+		li $v0, 10
+		syscall
+		
+		

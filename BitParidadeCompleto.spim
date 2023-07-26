@@ -1,0 +1,92 @@
+	#$t0 = numero lido
+	#$t1 = i do loop
+	#$t2 = contador de 1's
+	#$t3 = contera um bit para ver se e igual a 1 ou 0
+	#$t4 = 2
+	#$t5 = resto da divisao de $t2 por $t4
+	
+.data
+	entrada: .asciiz "$a0 = "
+	
+	saida1: .asciiz "bit-paridade ($v0): "
+	
+	saida2: .asciiz "\nsaida $(v1): "
+
+.text
+	main:
+		#print entrada
+		li $v0, 4
+		la, $a0, entrada
+		syscall
+		
+		#lendo numero
+		li $v0, 5
+		syscall
+		move $t0, $v0
+		
+		#print saida 1
+		li $v0, 4
+		la, $a0, saida1
+		syscall
+		
+		jal bitparidade
+		
+		#print bit paridade
+		li $v0, 1
+		move $a0, $t5 #mudar para 1 ou 0 dps da verificacao
+		syscall
+		
+		#print saida 2
+		li $v0, 4
+		la, $a0, saida2
+		syscall
+		
+		#print novo numero
+		li $v0, 1
+		move $a0, $t0 #mudar esse t0 para o reg que tera o novo numero
+		syscall
+		
+		#encierra o programa
+		li $v0, 10
+		syscall
+	
+	bitparidade:
+		li $t1, 6 #i do loop
+		li $t2, 0 #counter de 1's
+		
+		Loop: #percorre o numero  em binario e conta os 1's
+			blt $t1, 0, Exit
+			
+			srlv $t3, $t0, $t1 
+			andi $t3, 1 
+			
+			beq $t3, 1, incrementaCounter
+		
+			addi $t1, $t1, -1 
+			j Loop 
+		
+		incrementaCounter:
+			addi $t2, $t2, 1 
+			addi $t1, $t1, -1 
+			j Loop
+			
+		Exit:
+			beq $t2, $zero, RetornarZero
+			j Par
+			
+		RetornarZero:
+			li $t2, 0
+			jr $ra
+		
+		Par:
+			li $t4, 2 #divisor
+			div $t2, $t4
+			mfhi $t5 #copia o resto para $t5
+			
+			bne $t5, $zero, Impar #se o resto nao for 0, e impar
+			
+			jr $ra
+		
+		Impar:
+			addi $t0, $t0, 128 
+			jr $ra

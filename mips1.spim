@@ -1,0 +1,40 @@
+
+	bitparidade:
+		li $t1, 6 
+		li $t2, 0 
+		
+		while: 
+			blt $t1, 0, exit
+			
+			srlv $t3, $t0, $t1 
+			andi $t3, 1 
+			
+			beq $t3, 1, addcount
+		
+			addi $t1, $t1, -1 
+			j while 
+		
+		addcount:
+			addi $t2, $t2, 1 
+			addi $t1, $t1, -1 
+			j while
+			
+		exit:
+			beq $t2, $zero, volta
+			j voltapar
+			
+		volta:
+			li $t2, 0
+			jr $ra
+		voltapar:
+			li $t4, 2 
+			div $t2, $t4
+			mfhi $t5 
+			
+			bne $t5, $zero, voltaimpar 
+			
+			jr $ra
+		
+		voltaimpar:
+			addi $t0, $t0, 128 
+			jr $ra

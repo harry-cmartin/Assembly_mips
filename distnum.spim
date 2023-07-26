@@ -1,0 +1,35 @@
+
+
+
+
+elemDistintos:
+
+
+	li $v0, 1
+	move $t0, $a0
+	li $t1, 1
+
+
+loop:
+	slt $t2, $t1, $a1
+	beq $t2, $zero, saida
+
+
+	lw $t3, 0($t0)
+	lw $t4, 4($t0)
+
+
+
+	beq $t3, $t4, conta
+
+	addi $v0, $v0, 1
+	
+conta:
+
+
+	addi $t0, $t0, 4
+	addi $t1, $t1, 1
+	j loop
+
+saida:
+	jr $ra
